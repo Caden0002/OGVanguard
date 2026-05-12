@@ -34,17 +34,25 @@ export const INFLUENCERS = [
         platform: 'tiktok',
     },
     {
-        label: 'Reax Collection',
-        handle: '@reaxcollection',
-        href: 'https://www.tiktok.com/@reaxcollection',
-        platform: 'tiktok',
-    },
-    {
         label: 'OmeletteX',
         handle: '@ChaneLX645',
         href: 'https://www.youtube.com/@ChaneLX645',
         platform: 'youtube',
     },
+    {
+        label: 'Lester',
+        handle: '@lesterhereee',
+        href: 'https://www.instagram.com/lesterhereee/',
+        platform: 'instagram',
+    },
+    {
+        label: 'Reax Collection',
+        handle: '@reaxcollection',
+        href: 'https://www.tiktok.com/@reaxcollection',
+        platform: 'tiktok',
+    },
+
+
 ]
 
 export const BUY_OPTIONS = [
@@ -52,19 +60,19 @@ export const BUY_OPTIONS = [
         title: 'callane',
         detail: 'Decks, singles, and Vanguard accessories.',
         href: 'https://www.carousell.sg/u/callane/',
-        linkLabel: 'Open Carousell →',
+        linkLabel: 'Carousell →',
     },
     {
         title: 'Full Yen · Mr Poh',
         detail: 'SPs and high-rares.',
         href: 'https://sg.shp.ee/Jw5VZBri',
-        linkLabel: 'Open Shopee →',
+        linkLabel: 'Shopee →',
     },
     {
         title: 'Mint Condition',
         detail: 'Commons and rares.',
         href: 'https://maps.app.goo.gl/j4XHGC9QLfXcHPSc9',
-        linkLabel: 'Open in Google Maps →',
+        linkLabel: 'Google Maps →',
     },
 ]
 
@@ -80,9 +88,12 @@ export const COMMUNITY_DECKLIST = {
     href: 'https://www.ogcfvsingapore.com/decklist',
 }
 
-export const LEADERS = ['Eugene', 'Lester', 'Yuhang', 'Gabriel', 'Spencer']
+export const LEADERS = ['Eugene', 'Lester', 'Yuhang', 'Gabriel', 'Spencer', 'Caden']
 
-export const WHALES = ['Kirk', 'Lucas', 'Evan']
+export const SPENDERS = ['Ben', 'Lucas', 'Evan']
+
+export const WHALES = ['Kirk', 'Pathie']
+
 
 export const NAV_LINKS = [
     {
@@ -90,7 +101,7 @@ export const NAV_LINKS = [
         href: WHATSAPP_COMMUNITY_URL,
         external: true,
     },
-    { label: 'Shop', href: '#shop' },
+    { label: 'Shop', href: '#buy' },
     {
         label: 'Upcoming Tournament',
         href: 'https://www.ogcfvsingapore.com/',

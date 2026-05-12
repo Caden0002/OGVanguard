@@ -1,4 +1,4 @@
-import { WHALES, LEADERS } from "../content.js";
+import { WHALES, LEADERS, SPENDERS } from "../content.js";
 import { SectionLabel } from "./SectionLabel.jsx";
 
 const chipListClass = "flex list-none flex-wrap gap-3 p-0";
@@ -15,7 +15,7 @@ export function WhalesSection() {
       >
         Big Daddy Whales <span aria-hidden="true">🐋</span>
       </h2>
-      <p className="mt-4 mb-6 max-w-2xl text-sm text-slate-600">
+      <p className="mt-4 mb-4 max-w-2xl text-sm text-slate-600">
         Shout-out to the people that keeps the community going.
       </p>
       <ul className={chipListClass}>
@@ -25,8 +25,18 @@ export function WhalesSection() {
           </li>
         ))}
       </ul>
-      <p className="mt-8 mb-6 max-w-2xl text-sm text-slate-600">
-        钱可以赚回来的
+      <p className="mt-6 mb-4 max-w-2xl text-sm text-slate-600">
+        钱可以赚回来的 Big Spenders
+      </p>
+      <ul className={chipListClass}>
+        {SPENDERS.map((name) => (
+          <li key={name} className={chipItemClass}>
+            {name}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-5 mb-4 max-w-2xl text-sm text-slate-600">
+        Lowkey Whales
       </p>
       <ul className={chipListClass}>
         {WHALES.map((name) => (
