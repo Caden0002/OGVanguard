@@ -1,5 +1,18 @@
 @import 'tailwindcss';
 
+@layer base {
+  /* Match SiteFooter bg so iOS/Android overscroll past the page isn’t stark white. */
+  html {
+    @apply bg-slate-50 antialiased;
+  }
+  body {
+    @apply min-h-dvh bg-slate-50;
+  }
+  #root {
+    @apply min-h-dvh;
+  }
+}
+
 @theme {
   --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
 }

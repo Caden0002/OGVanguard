@@ -26,6 +26,15 @@ export const CARD_SHOPS = [
     },
 ]
 
+/** Other Singapore OG / Classic Vanguard communities (add more entries as needed). */
+export const SG_OG_VANGUARD_GROUPS = [
+    {
+        name: 'NUS TCG Club',
+        href: 'https://t.me/+U6V3HUg3G2owZGI9',
+        linkLabel: 'Join on Telegram →',
+    },
+]
+
 export const INFLUENCERS = [
     {
         label: 'Vintage Vanguard',

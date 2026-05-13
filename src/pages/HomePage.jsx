@@ -17,10 +17,11 @@ export default function HomePage() {
       <StatsBar />
       <main className="mx-auto w-full max-w-6xl flex-1 space-y-20 px-6 py-16 md:space-y-24 md:px-10 md:py-20">
         <ShopsSection />
-        <OtherOgGroupsSection />
         <CreatorsSection />
         <BuySection />
         <MetaSection />
+        <OtherOgGroupsSection />
+
         <WhalesSection />
       </main>
       <SiteFooter />

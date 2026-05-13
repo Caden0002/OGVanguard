@@ -10,7 +10,7 @@ export function SiteHeader() {
     "text-slate-500 no-underline transition hover:text-slate-900";
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur-md md:px-10">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/7c0 px-5 py-4 backdrop-blur-md md:px-10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <a
@@ -52,7 +52,7 @@ export function SiteHeader() {
               <Link key={label} to={href} className={linkClass}>
                 {label}
               </Link>
-            ),
+            )
           )}
         </nav>
       </div>
