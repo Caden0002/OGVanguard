@@ -70,8 +70,8 @@ function takeCardFromPool(pool, type) {
 }
 
 /**
- * Picks one of four twin-drive outcomes (25% each), then stacks the deck so
- * the first two checks always match that outcome; the rest is shuffled.
+ * Picks a twin-drive outcome: double crit **10%**, each other scenario **30%**.
+ * Then stacks the deck so the first two checks match that outcome.
  */
 function buildTwinDriveDeckForScenario(scenarioIndex) {
   const pool = makeCardPool();
@@ -299,8 +299,15 @@ function useDoubleCritVideoPreload(scenarioIndex, doubleCritVideoIndex) {
   }, [scenarioIndex, doubleCritVideoIndex]);
 }
 
+/** ~10% double crit (scenario 3); ~30% each for the other three. */
+function pickScenarioIndex() {
+  const u = Math.random();
+  if (u < 0.1) return 3;
+  return Math.floor(((u - 0.1) / 0.9) * 3);
+}
+
 function newRoundState() {
-  const scenarioIndex = Math.floor(Math.random() * 4);
+  const scenarioIndex = pickScenarioIndex();
   return {
     scenarioIndex,
     deck: buildTwinDriveDeckForScenario(scenarioIndex),
