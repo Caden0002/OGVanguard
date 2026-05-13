@@ -34,6 +34,18 @@ const NORMAL_CARD_ART = [
     src: "/normal-bt15-s10-burnout.png",
     alt: "Cardfight!! Vanguard normal unit — Dragonic Burnout SP (Kagero)",
   },
+  {
+    src: "/normal-bt01-049-gojo.png",
+    alt: "Cardfight!! Vanguard normal unit — Dragon Monk, Gojo (Kagero)",
+  },
+  {
+    src: "/normal-bt01-048-bahr.png",
+    alt: "Cardfight!! Vanguard normal unit — Embodiment of Armor, Bahr (Kagero)",
+  },
+  {
+    src: "/normal-bt01-022-nehalem.png",
+    alt: "Cardfight!! Vanguard normal unit — Dragon Knight, Nehalem (Kagero)",
+  },
 ];
 
 function pickNormalArt() {
