@@ -1,6 +1,14 @@
+import { Link } from "react-router-dom";
 import { NAV_LINKS } from "../content.js";
 
+function isExternalHref(href, external) {
+  return Boolean(external) || /^https?:\/\//i.test(href);
+}
+
 export function SiteHeader() {
+  const linkClass =
+    "text-slate-500 no-underline transition hover:text-slate-900";
+
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur-md md:px-10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
@@ -29,18 +37,23 @@ export function SiteHeader() {
           className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium uppercase tracking-wide text-slate-500 md:gap-x-8 md:text-xs"
           aria-label="Main"
         >
-          {NAV_LINKS.map(({ label, href, external }) => (
-            <a
-              key={label}
-              href={href}
-              {...(external
-                ? { target: '_blank', rel: 'noopener noreferrer' }
-                : {})}
-              className="text-slate-500 no-underline transition hover:text-slate-900"
-            >
-              {label}
-            </a>
-          ))}
+          {NAV_LINKS.map(({ label, href, external }) =>
+            isExternalHref(href, external) ? (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkClass}
+              >
+                {label}
+              </a>
+            ) : (
+              <Link key={label} to={href} className={linkClass}>
+                {label}
+              </Link>
+            ),
+          )}
         </nav>
       </div>
     </header>

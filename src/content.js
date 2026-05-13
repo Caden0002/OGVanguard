@@ -101,7 +101,7 @@ export const NAV_LINKS = [
         href: WHATSAPP_COMMUNITY_URL,
         external: true,
     },
-    { label: 'Shop', href: '#buy' },
+    { label: 'Shop', href: '/#buy' },
     {
         label: 'Upcoming Tournament',
         href: 'https://www.ogcfvsingapore.com/',
