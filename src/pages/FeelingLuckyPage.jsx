@@ -285,11 +285,18 @@ function needsCardArt(card) {
   return card != null && (card.type === "none" || card.type === "critical");
 }
 
-/** Fullscreen clips when both drive checks are critical (50/50 per double-crit round). */
-const DOUBLE_CRIT_VIDEO_SRCS = [
-  "/feeling-lucky-both-triggers.mp4",
-  "/feeling-lucky-both-triggers-b.mp4",
+/** Fullscreen clips when both drive checks are critical (uniform random per double-crit round). */
+const DOUBLE_CRIT_CLIP_SRCS = [
+  "/doubleCrit1.gif",
+  "/doubleCrit2.gif",
+  "/doubleCrit3.gif",
 ];
+
+/**
+ * `<img>` GIF has no `ended`; overlay closes after this many ms from `load` (one loop each).
+ * Tune when swapping files (order matches DOUBLE_CRIT_CLIP_SRCS).
+ */
+const DOUBLE_CRIT_CLIP_DISPLAY_MS = [2200, 5900, 3000];
 
 /** Preload card PNGs once on mount (lightweight). */
 function useFeelingLuckyImagePreload() {
@@ -303,29 +310,18 @@ function useFeelingLuckyImagePreload() {
 }
 
 /**
- * Only when this round is double-crit (scenario 3), preload the **one** clip
- * that can play (`doubleCritVideoIndex`). Avoids pulling both large .mov files.
+ * When this round is double-crit (scenario 3), preload only the clip that may show.
  */
-function useDoubleCritVideoPreload(scenarioIndex, doubleCritVideoIndex) {
+function useDoubleCritClipPreload(scenarioIndex, doubleCritVideoIndex) {
   useEffect(() => {
     if (scenarioIndex !== 3) return undefined;
 
-    const src = DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex];
-    const v = document.createElement("video");
-    v.preload = "auto";
-    v.muted = true;
-    v.playsInline = true;
-    v.setAttribute("aria-hidden", "true");
-    v.src = src;
-    v.style.cssText =
-      "position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none";
-    document.body.appendChild(v);
-    v.load();
+    const src = DOUBLE_CRIT_CLIP_SRCS[doubleCritVideoIndex];
+    const img = new Image();
+    img.src = src;
 
     return () => {
-      v.removeAttribute("src");
-      v.load();
-      v.remove();
+      img.src = "";
     };
   }, [scenarioIndex, doubleCritVideoIndex]);
 }
@@ -345,7 +341,9 @@ function newRoundState() {
     drive1: null,
     drive2: null,
     doubleCritVideoIndex:
-      scenarioIndex === 3 ? Math.floor(Math.random() * 2) : 0,
+      scenarioIndex === 3
+        ? Math.floor(Math.random() * DOUBLE_CRIT_CLIP_SRCS.length)
+        : 0,
   };
 }
 
@@ -355,7 +353,7 @@ export function FeelingLuckyPage() {
   const { deck, drive1, drive2, doubleCritVideoIndex, scenarioIndex } = g;
 
   useFeelingLuckyImagePreload();
-  useDoubleCritVideoPreload(scenarioIndex, doubleCritVideoIndex);
+  useDoubleCritClipPreload(scenarioIndex, doubleCritVideoIndex);
 
   const twinComplete = drive1 && drive2;
   const bothTwinTriggers =
@@ -366,42 +364,41 @@ export function FeelingLuckyPage() {
 
   const showBothTriggersVideo = bothTwinTriggers && !bothTriggersPlaybackDone;
 
-  const critVideoRef = useRef(null);
-  const [critVideoBuffering, setCritVideoBuffering] = useState(true);
+  const critClipAutoCloseTimerRef = useRef(null);
+  const [critClipBuffering, setCritClipBuffering] = useState(true);
 
-  useLayoutEffect(() => {
-    if (!showBothTriggersVideo) {
-      setCritVideoBuffering(true);
-      return undefined;
+  const clearCritClipAutoCloseTimer = useCallback(() => {
+    if (critClipAutoCloseTimerRef.current != null) {
+      clearTimeout(critClipAutoCloseTimerRef.current);
+      critClipAutoCloseTimerRef.current = null;
     }
-    setCritVideoBuffering(true);
-    const v = critVideoRef.current;
-    if (!v) return undefined;
+  }, []);
 
-    let cancelled = false;
-    const onPlaying = () => {
-      if (!cancelled) setCritVideoBuffering(false);
-    };
-    const tryPlay = () => {
-      if (cancelled || !v) return;
-      void v.play().catch(() => {
-        if (!cancelled) setCritVideoBuffering(false);
-      });
-    };
+  const finishBothTriggersClip = useCallback(() => {
+    clearCritClipAutoCloseTimer();
+    setCritClipBuffering(true);
+    setBothTriggersPlaybackDone(true);
+  }, [clearCritClipAutoCloseTimer]);
 
-    v.addEventListener("playing", onPlaying, { once: true });
-    if (v.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-      tryPlay();
-    } else {
-      v.addEventListener("canplay", tryPlay, { once: true });
-    }
+  const onDoubleCritClipLoaded = useCallback(() => {
+    setCritClipBuffering(false);
+    clearCritClipAutoCloseTimer();
+    const ms =
+      DOUBLE_CRIT_CLIP_DISPLAY_MS[doubleCritVideoIndex] ??
+      DOUBLE_CRIT_CLIP_DISPLAY_MS[0];
+    critClipAutoCloseTimerRef.current = setTimeout(() => {
+      critClipAutoCloseTimerRef.current = null;
+      finishBothTriggersClip();
+    }, ms);
+  }, [
+    clearCritClipAutoCloseTimer,
+    doubleCritVideoIndex,
+    finishBothTriggersClip,
+  ]);
 
-    return () => {
-      cancelled = true;
-      v.removeEventListener("playing", onPlaying);
-      v.removeEventListener("canplay", tryPlay);
-    };
-  }, [showBothTriggersVideo, doubleCritVideoIndex]);
+  useEffect(() => {
+    return () => clearCritClipAutoCloseTimer();
+  }, [clearCritClipAutoCloseTimer]);
 
   const noDoubleTrigger = twinComplete && !bothTwinTriggers;
 
@@ -456,14 +453,12 @@ export function FeelingLuckyPage() {
       isCritCard(drive1) &&
       !drive2 &&
       !showBothTriggersVideo ? (
-        <video
+        <img
           key={`warm-${doubleCritVideoIndex}`}
-          aria-hidden
+          alt=""
+          decoding="async"
           className="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
-          src={DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex]}
-          preload="auto"
-          muted
-          playsInline
+          src={DOUBLE_CRIT_CLIP_SRCS[doubleCritVideoIndex]}
         />
       ) : null}
       {showBothTriggersVideo ? (
@@ -473,19 +468,18 @@ export function FeelingLuckyPage() {
           aria-modal="true"
           aria-label="Both drive checks hit triggers"
         >
-          <video
-            ref={critVideoRef}
+          <img
+            key={drive2?.id}
+            alt=""
+            decoding="async"
             className={`max-h-full max-w-full object-contain transition-opacity duration-200 ${
-              critVideoBuffering ? "opacity-0" : "opacity-100"
+              critClipBuffering ? "opacity-0" : "opacity-100"
             }`}
-            src={DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex]}
-            preload="auto"
-            playsInline
-            muted
-            onEnded={() => setBothTriggersPlaybackDone(true)}
-            onError={() => setBothTriggersPlaybackDone(true)}
+            src={DOUBLE_CRIT_CLIP_SRCS[doubleCritVideoIndex]}
+            onLoad={onDoubleCritClipLoaded}
+            onError={() => finishBothTriggersClip()}
           />
-          {critVideoBuffering ? (
+          {critClipBuffering ? (
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black">
               <span className="sr-only">Loading clip</span>
               <span
@@ -504,10 +498,9 @@ export function FeelingLuckyPage() {
               top: "max(0.75rem, env(safe-area-inset-top, 0px))",
               right: "max(0.75rem, env(safe-area-inset-right, 0px))",
             }}
-            aria-label="Close video"
+            aria-label="Close clip"
             onClick={() => {
-              critVideoRef.current?.pause();
-              setBothTriggersPlaybackDone(true);
+              finishBothTriggersClip();
             }}
           >
             <span aria-hidden>×</span>
