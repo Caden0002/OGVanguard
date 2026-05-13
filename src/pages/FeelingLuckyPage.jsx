@@ -103,6 +103,46 @@ const CARD_META = {
   },
 };
 
+const CRITICAL_CARD_SRC = "/critical-trigger-card.png";
+
+/** Spinner over card art until the image finishes loading (or errors). */
+function RevealedCardImage({ src, alt, imageClass, compact }) {
+  const [loaded, setLoaded] = useState(false);
+
+  const box =
+    compact
+      ? "relative min-h-[118px] min-w-[85px]"
+      : "relative min-h-[180px] min-w-[126px]";
+
+  return (
+    <div className={box}>
+      <div
+        className={`absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-slate-100/95 transition-opacity duration-200 ease-out ${
+          loaded ? "pointer-events-none opacity-0" : "opacity-100"
+        }`}
+        aria-busy={!loaded}
+        aria-live="polite"
+      >
+        <span className="sr-only">Loading card art</span>
+        <span
+          className="h-7 w-7 shrink-0 animate-spin rounded-full border-2 border-slate-200 border-t-slate-900"
+          aria-hidden
+        />
+      </div>
+      <img
+        src={src}
+        alt={alt}
+        className={`relative z-0 ${imageClass} transition-opacity duration-200 ease-out ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+        draggable={false}
+      />
+    </div>
+  );
+}
+
 /** Standard TCG portrait ratio (e.g. 63×88 mm); keeps placeholder aligned with real cards. */
 const CARD_ASPECT_BOX = "aspect-[63/88]";
 
@@ -135,14 +175,14 @@ function DriveCard({ card, flipped, compact = false }) {
   if (card.type === "none") {
     return (
       <div className={imageFrame}>
-        <img
-          key={card.id}
+        <RevealedCardImage
+          key={`${card.id}-${card.normalSrc ?? ""}`}
           src={card.normalSrc ?? "/normal-drive-card.png"}
           alt={
             card.normalAlt ?? "Cardfight!! Vanguard normal unit card (Kagero)"
           }
-          className={imageClass}
-          draggable={false}
+          imageClass={imageClass}
+          compact={compact}
         />
       </div>
     );
@@ -151,11 +191,12 @@ function DriveCard({ card, flipped, compact = false }) {
   if (card.type === "critical") {
     return (
       <div className={imageFrame}>
-        <img
+        <RevealedCardImage
+          key={card.id}
           src={CRITICAL_CARD_SRC}
           alt="Cardfight!! Vanguard Critical Trigger card (Kagero)"
-          className={imageClass}
-          draggable={false}
+          imageClass={imageClass}
+          compact={compact}
         />
       </div>
     );
@@ -216,10 +257,8 @@ const DOUBLE_CRIT_VIDEO_SRCS = [
   "/feeling-lucky-both-triggers-b.mov",
 ];
 
-const CRITICAL_CARD_SRC = "/critical-trigger-card.png";
-
-/** Preload card PNGs + double-crit clips so reveals / overlay stutter less. */
-function useFeelingLuckyAssetPreload() {
+/** Preload card PNGs once on mount (lightweight). */
+function useFeelingLuckyImagePreload() {
   useEffect(() => {
     const imageUrls = [
       ...NORMAL_CARD_ART.map((a) => a.src),
@@ -229,29 +268,35 @@ function useFeelingLuckyAssetPreload() {
       const img = new Image();
       img.src = src;
     }
+  }, []);
+}
 
-    const videos = DOUBLE_CRIT_VIDEO_SRCS.map((src) => {
-      const v = document.createElement("video");
-      v.preload = "auto";
-      v.muted = true;
-      v.playsInline = true;
-      v.setAttribute("aria-hidden", "true");
-      v.src = src;
-      v.style.cssText =
-        "position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none";
-      document.body.appendChild(v);
-      v.load();
-      return v;
-    });
+/**
+ * Only when this round is double-crit (scenario 3), preload the **one** clip
+ * that can play (`doubleCritVideoIndex`). Avoids pulling both large .mov files.
+ */
+function useDoubleCritVideoPreload(scenarioIndex, doubleCritVideoIndex) {
+  useEffect(() => {
+    if (scenarioIndex !== 3) return undefined;
+
+    const src = DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex];
+    const v = document.createElement("video");
+    v.preload = "auto";
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute("aria-hidden", "true");
+    v.src = src;
+    v.style.cssText =
+      "position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none";
+    document.body.appendChild(v);
+    v.load();
 
     return () => {
-      for (const v of videos) {
-        v.removeAttribute("src");
-        v.load();
-        v.remove();
-      }
+      v.removeAttribute("src");
+      v.load();
+      v.remove();
     };
-  }, []);
+  }, [scenarioIndex, doubleCritVideoIndex]);
 }
 
 function newRoundState() {
@@ -267,11 +312,12 @@ function newRoundState() {
 }
 
 export function FeelingLuckyPage() {
-  useFeelingLuckyAssetPreload();
-
   const [g, setG] = useState(() => newRoundState());
 
-  const { deck, drive1, drive2, doubleCritVideoIndex } = g;
+  const { deck, drive1, drive2, doubleCritVideoIndex, scenarioIndex } = g;
+
+  useFeelingLuckyImagePreload();
+  useDoubleCritVideoPreload(scenarioIndex, doubleCritVideoIndex);
 
   const twinComplete = drive1 && drive2;
   const bothTwinTriggers =
@@ -320,6 +366,7 @@ export function FeelingLuckyPage() {
             key={doubleCritVideoIndex}
             className="max-h-full max-w-full object-contain"
             src={DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex]}
+            preload="auto"
             autoPlay
             playsInline
             muted

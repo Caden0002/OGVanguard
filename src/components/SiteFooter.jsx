@@ -2,9 +2,12 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-slate-200/80 bg-slate-50 px-6 py-8 text-center md:px-10 md:py-16">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-4">
-        <p className="text-base uppercase tracking-[0.22em] text-slate-800 md:text-lg">
-          OG Vanguard Singapore{" "}
-        </p>
+        <a
+          href="https://ogvanguard.com/"
+          className="text-base uppercase tracking-[0.22em] text-slate-800 no-underline transition hover:text-slate-950 md:text-lg"
+        >
+          OG Vanguard Singapore
+        </a>
 
         <a
           href="https://github.com/Caden0002/OGVanguard"
