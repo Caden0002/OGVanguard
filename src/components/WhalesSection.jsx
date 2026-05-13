@@ -26,7 +26,7 @@ export function WhalesSection() {
         ))}
       </ul>
       <p className="mt-6 mb-4 max-w-2xl text-sm text-slate-600">
-        钱可以赚回来的 Big Spenders
+        钱可以赚回来的 Big Spenders.
       </p>
       <ul className={chipListClass}>
         {SPENDERS.map((name) => (
@@ -36,7 +36,7 @@ export function WhalesSection() {
         ))}
       </ul>
       <p className="mt-5 mb-4 max-w-2xl text-sm text-slate-600">
-        Lowkey Whales
+        Lowkey Whales.
       </p>
       <ul className={chipListClass}>
         {WHALES.map((name) => (
