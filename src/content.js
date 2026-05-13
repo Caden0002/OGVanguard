@@ -60,6 +60,18 @@ export const INFLUENCERS = [
         href: 'https://www.tiktok.com/@reaxcollection',
         platform: 'tiktok',
     },
+    {
+        label: 'Spencer',
+        handle: '@misgradekingmgk',
+        href: 'https://www.tiktok.com/@misgradekingmgk',
+        platform: 'tiktok',
+    },
+    {
+        label: 'Eugene',
+        handle: '@ctj_collection',
+        href: 'https://www.instagram.com/ctj_collection/',
+        platform: 'instagram',
+    },
 
 
 ]
