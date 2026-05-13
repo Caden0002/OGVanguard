@@ -4,7 +4,11 @@ import { SectionLabel } from "./SectionLabel.jsx";
 
 export function BuySection() {
   return (
-    <section id="buy" aria-labelledby="buy-heading">
+    <section
+      id="buy"
+      className="scroll-mt-28 md:scroll-mt-32"
+      aria-labelledby="buy-heading"
+    >
       <SectionLabel>Binders · deals</SectionLabel>
       <h2
         id="buy-heading"

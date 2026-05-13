@@ -5,12 +5,21 @@ function isExternalHref(href, external) {
   return Boolean(external) || /^https?:\/\//i.test(href);
 }
 
+/** In-app hash links (e.g. /#buy) need a real <a> so the browser scrolls; RR <Link to="#…> is not a hash. */
+function isInternalHashLink(href) {
+  return (
+    typeof href === "string" &&
+    href.includes("#") &&
+    !isExternalHref(href, false)
+  );
+}
+
 export function SiteHeader() {
   const linkClass =
     "text-slate-500 no-underline transition hover:text-slate-900";
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/7c0 px-5 py-4 backdrop-blur-md md:px-10">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 px-5 py-4 backdrop-blur-md md:px-10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <a
@@ -46,6 +55,10 @@ export function SiteHeader() {
                 rel="noopener noreferrer"
                 className={linkClass}
               >
+                {label}
+              </a>
+            ) : isInternalHashLink(href) ? (
+              <a key={label} href={href} className={linkClass}>
                 {label}
               </a>
             ) : (
