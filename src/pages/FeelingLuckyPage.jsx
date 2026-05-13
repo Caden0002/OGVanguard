@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { SiteFooter } from "../components/SiteFooter.jsx";
 import { SiteHeader } from "../components/SiteHeader.jsx";
 
@@ -106,13 +112,34 @@ const CARD_META = {
 const CRITICAL_CARD_SRC = "/critical-trigger-card.png";
 
 /** Spinner over card art until the image finishes loading (or errors). */
-function RevealedCardImage({ src, alt, imageClass, compact }) {
+function RevealedCardImage({ src, alt, imageClass, compact, onArtReady }) {
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef(null);
+  const reportedReady = useRef(false);
 
-  const box =
-    compact
-      ? "relative min-h-[118px] min-w-[85px]"
-      : "relative min-h-[180px] min-w-[126px]";
+  useEffect(() => {
+    setLoaded(false);
+    reportedReady.current = false;
+  }, [src]);
+
+  const markDone = useCallback(() => {
+    setLoaded(true);
+    if (!reportedReady.current) {
+      reportedReady.current = true;
+      onArtReady?.();
+    }
+  }, [onArtReady]);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (el?.complete && el.naturalHeight > 0) {
+      markDone();
+    }
+  }, [src, markDone]);
+
+  const box = compact
+    ? "relative min-h-[118px] min-w-[85px]"
+    : "relative min-h-[180px] min-w-[126px]";
 
   return (
     <div className={box}>
@@ -130,13 +157,14 @@ function RevealedCardImage({ src, alt, imageClass, compact }) {
         />
       </div>
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className={`relative z-0 ${imageClass} transition-opacity duration-200 ease-out ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
-        onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(true)}
+        onLoad={markDone}
+        onError={markDone}
         draggable={false}
       />
     </div>
@@ -146,7 +174,7 @@ function RevealedCardImage({ src, alt, imageClass, compact }) {
 /** Standard TCG portrait ratio (e.g. 63×88 mm); keeps placeholder aligned with real cards. */
 const CARD_ASPECT_BOX = "aspect-[63/88]";
 
-function DriveCard({ card, flipped, compact = false }) {
+function DriveCard({ card, flipped, compact = false, onArtLoaded }) {
   const shell = compact
     ? `flex h-[118px] ${CARD_ASPECT_BOX} w-auto items-center justify-center rounded-xl border-2`
     : `aspect-[3/4] min-h-[180px] rounded-2xl border-2`;
@@ -183,6 +211,7 @@ function DriveCard({ card, flipped, compact = false }) {
           }
           imageClass={imageClass}
           compact={compact}
+          onArtReady={onArtLoaded}
         />
       </div>
     );
@@ -197,6 +226,7 @@ function DriveCard({ card, flipped, compact = false }) {
           alt="Cardfight!! Vanguard Critical Trigger card (Kagero)"
           imageClass={imageClass}
           compact={compact}
+          onArtReady={onArtLoaded}
         />
       </div>
     );
@@ -251,6 +281,10 @@ function isCritCard(card) {
   return card != null && card.type === "critical";
 }
 
+function needsCardArt(card) {
+  return card != null && (card.type === "none" || card.type === "critical");
+}
+
 /** Fullscreen clips when both drive checks are critical (50/50 per double-crit round). */
 const DOUBLE_CRIT_VIDEO_SRCS = [
   "/feeling-lucky-both-triggers.mov",
@@ -260,10 +294,7 @@ const DOUBLE_CRIT_VIDEO_SRCS = [
 /** Preload card PNGs once on mount (lightweight). */
 function useFeelingLuckyImagePreload() {
   useEffect(() => {
-    const imageUrls = [
-      ...NORMAL_CARD_ART.map((a) => a.src),
-      CRITICAL_CARD_SRC,
-    ];
+    const imageUrls = [...NORMAL_CARD_ART.map((a) => a.src), CRITICAL_CARD_SRC];
     for (const src of imageUrls) {
       const img = new Image();
       img.src = src;
@@ -335,7 +366,65 @@ export function FeelingLuckyPage() {
 
   const showBothTriggersVideo = bothTwinTriggers && !bothTriggersPlaybackDone;
 
+  const critVideoRef = useRef(null);
+  const [critVideoBuffering, setCritVideoBuffering] = useState(true);
+
+  useLayoutEffect(() => {
+    if (!showBothTriggersVideo) {
+      setCritVideoBuffering(true);
+      return undefined;
+    }
+    setCritVideoBuffering(true);
+    const v = critVideoRef.current;
+    if (!v) return undefined;
+
+    let cancelled = false;
+    const onPlaying = () => {
+      if (!cancelled) setCritVideoBuffering(false);
+    };
+    const tryPlay = () => {
+      if (cancelled || !v) return;
+      void v.play().catch(() => {
+        if (!cancelled) setCritVideoBuffering(false);
+      });
+    };
+
+    v.addEventListener("playing", onPlaying, { once: true });
+    if (v.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      tryPlay();
+    } else {
+      v.addEventListener("canplay", tryPlay, { once: true });
+    }
+
+    return () => {
+      cancelled = true;
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("canplay", tryPlay);
+    };
+  }, [showBothTriggersVideo, doubleCritVideoIndex]);
+
   const noDoubleTrigger = twinComplete && !bothTwinTriggers;
+
+  const [slot2ArtReady, setSlot2ArtReady] = useState(false);
+  const prevDrive2IdRef = useRef(undefined);
+
+  useLayoutEffect(() => {
+    const id = drive2?.id;
+    if (id !== prevDrive2IdRef.current) {
+      prevDrive2IdRef.current = id;
+      if (!drive2) {
+        setSlot2ArtReady(false);
+        return;
+      }
+      if (!needsCardArt(drive2)) {
+        setSlot2ArtReady(true);
+        return;
+      }
+      setSlot2ArtReady(false);
+    }
+  }, [drive2]);
+
+  const markSlot2ArtLoaded = useCallback(() => setSlot2ArtReady(true), []);
 
   const tryAgain = useCallback(() => {
     setG(newRoundState());
@@ -362,6 +451,21 @@ export function FeelingLuckyPage() {
 
   return (
     <div className="flex min-h-svh flex-col bg-white font-sans text-[17px] leading-relaxed text-slate-600 antialiased max-lg:text-base">
+      {scenarioIndex === 3 &&
+      drive1 &&
+      isCritCard(drive1) &&
+      !drive2 &&
+      !showBothTriggersVideo ? (
+        <video
+          key={`warm-${doubleCritVideoIndex}`}
+          aria-hidden
+          className="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
+          src={DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex]}
+          preload="auto"
+          muted
+          playsInline
+        />
+      ) : null}
       {showBothTriggersVideo ? (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black"
@@ -370,16 +474,44 @@ export function FeelingLuckyPage() {
           aria-label="Both drive checks hit triggers"
         >
           <video
-            key={doubleCritVideoIndex}
-            className="max-h-full max-w-full object-contain"
+            ref={critVideoRef}
+            className={`max-h-full max-w-full object-contain transition-opacity duration-200 ${
+              critVideoBuffering ? "opacity-0" : "opacity-100"
+            }`}
             src={DOUBLE_CRIT_VIDEO_SRCS[doubleCritVideoIndex]}
             preload="auto"
-            autoPlay
             playsInline
             muted
             onEnded={() => setBothTriggersPlaybackDone(true)}
             onError={() => setBothTriggersPlaybackDone(true)}
           />
+          {critVideoBuffering ? (
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black">
+              <span className="sr-only">Loading clip</span>
+              <span
+                className="h-10 w-10 shrink-0 animate-spin rounded-full border-2 border-zinc-600 border-t-white"
+                aria-hidden
+              />
+              <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400">
+                Loading…
+              </p>
+            </div>
+          ) : null}
+          <button
+            type="button"
+            className="absolute z-[210] flex h-10 w-10 items-center justify-center rounded-full border border-zinc-500/90 bg-zinc-950/85 text-xl font-light leading-none text-zinc-100 shadow-lg transition hover:border-zinc-400 hover:bg-zinc-900 hover:text-white md:h-8 md:w-8 md:text-2xl"
+            style={{
+              top: "max(0.75rem, env(safe-area-inset-top, 0px))",
+              right: "max(0.75rem, env(safe-area-inset-right, 0px))",
+            }}
+            aria-label="Close video"
+            onClick={() => {
+              critVideoRef.current?.pause();
+              setBothTriggersPlaybackDone(true);
+            }}
+          >
+            <span aria-hidden>×</span>
+          </button>
         </div>
       ) : null}
       <SiteHeader />
@@ -412,7 +544,12 @@ export function FeelingLuckyPage() {
                 Second check
               </p>
               <div className="flex justify-end">
-                <DriveCard card={drive2} flipped={!!drive2} compact />
+                <DriveCard
+                  card={drive2}
+                  flipped={!!drive2}
+                  compact
+                  onArtLoaded={markSlot2ArtLoaded}
+                />
               </div>
             </div>
           </div>
@@ -434,21 +571,33 @@ export function FeelingLuckyPage() {
                 </button>
               </>
             ) : noDoubleTrigger ? (
-              <div className="flex max-w-[min(100%,14rem)] flex-col items-center gap-2 text-center">
-                <p className="text-xs font-semibold leading-snug text-slate-800">
-                  You suck!!
-                </p>
-                <p className="text-[10px] leading-snug text-slate-600">
-                  Zifei can&apos;t be bothered. Twin drive again?
-                </p>
-                <button
-                  type="button"
-                  onClick={tryAgain}
-                  className="mt-1 w-fit rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-[11px] font-black uppercase tracking-wide text-slate-900 shadow-sm transition hover:bg-slate-100"
-                >
-                  Try again
-                </button>
-              </div>
+              slot2ArtReady ? (
+                <div className="flex max-w-[min(100%,14rem)] flex-col items-center gap-2 text-center">
+                  <p className="text-xs font-semibold leading-snug text-slate-800">
+                    You suck!!
+                  </p>
+                  <p className="text-[10px] leading-snug text-slate-600">
+                    Zifei can&apos;t be bothered. Twin drive again?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={tryAgain}
+                    className="mt-1 w-fit rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-[11px] font-black uppercase tracking-wide text-slate-900 shadow-sm transition hover:bg-slate-100"
+                  >
+                    Try again
+                  </button>
+                </div>
+              ) : (
+                <div className="flex max-w-[min(100%,14rem)] flex-col items-center gap-2 text-center">
+                  <span
+                    className="mx-auto h-7 w-7 shrink-0 animate-spin rounded-full border-2 border-slate-200 border-t-slate-900"
+                    aria-hidden
+                  />
+                  <p className="text-[10px] font-medium leading-snug text-slate-500">
+                    Loading second card…
+                  </p>
+                </div>
+              )
             ) : (
               <div className="flex max-w-[min(100%,14rem)] flex-col items-center gap-2 text-center">
                 <p className="text-xs font-semibold leading-snug text-slate-800">
