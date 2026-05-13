@@ -287,8 +287,8 @@ function needsCardArt(card) {
 
 /** Fullscreen clips when both drive checks are critical (50/50 per double-crit round). */
 const DOUBLE_CRIT_VIDEO_SRCS = [
-  "/feeling-lucky-both-triggers.mov",
-  "/feeling-lucky-both-triggers-b.mov",
+  "/feeling-lucky-both-triggers.mp4",
+  "/feeling-lucky-both-triggers-b.mp4",
 ];
 
 /** Preload card PNGs once on mount (lightweight). */
