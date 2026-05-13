@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SiteFooter } from "../components/SiteFooter.jsx";
 import { SiteHeader } from "../components/SiteHeader.jsx";
 
@@ -152,7 +152,7 @@ function DriveCard({ card, flipped, compact = false }) {
     return (
       <div className={imageFrame}>
         <img
-          src="/critical-trigger-card.png"
+          src={CRITICAL_CARD_SRC}
           alt="Cardfight!! Vanguard Critical Trigger card (Kagero)"
           className={imageClass}
           draggable={false}
@@ -216,6 +216,44 @@ const DOUBLE_CRIT_VIDEO_SRCS = [
   "/feeling-lucky-both-triggers-b.mov",
 ];
 
+const CRITICAL_CARD_SRC = "/critical-trigger-card.png";
+
+/** Preload card PNGs + double-crit clips so reveals / overlay stutter less. */
+function useFeelingLuckyAssetPreload() {
+  useEffect(() => {
+    const imageUrls = [
+      ...NORMAL_CARD_ART.map((a) => a.src),
+      CRITICAL_CARD_SRC,
+    ];
+    for (const src of imageUrls) {
+      const img = new Image();
+      img.src = src;
+    }
+
+    const videos = DOUBLE_CRIT_VIDEO_SRCS.map((src) => {
+      const v = document.createElement("video");
+      v.preload = "auto";
+      v.muted = true;
+      v.playsInline = true;
+      v.setAttribute("aria-hidden", "true");
+      v.src = src;
+      v.style.cssText =
+        "position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none";
+      document.body.appendChild(v);
+      v.load();
+      return v;
+    });
+
+    return () => {
+      for (const v of videos) {
+        v.removeAttribute("src");
+        v.load();
+        v.remove();
+      }
+    };
+  }, []);
+}
+
 function newRoundState() {
   const scenarioIndex = Math.floor(Math.random() * 4);
   return {
@@ -229,6 +267,8 @@ function newRoundState() {
 }
 
 export function FeelingLuckyPage() {
+  useFeelingLuckyAssetPreload();
+
   const [g, setG] = useState(() => newRoundState());
 
   const { deck, drive1, drive2, doubleCritVideoIndex } = g;
