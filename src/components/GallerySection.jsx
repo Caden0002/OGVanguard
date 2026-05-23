@@ -1,74 +1,172 @@
-import { useState } from "react";
-import {
-  GALLERY_EVENTS,
-  galleryHasPhotos,
-  getGalleryPhotos,
-} from "../content.js";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { GALLERY_EVENTS, getGalleryPhotos } from "../content.js";
 import { SectionLabel } from "./SectionLabel.jsx";
 
-function PhotoPlaceholder({ alt, caption }) {
+function LoadingSpinner({ label = "Loading image" }) {
   return (
-    <figure className="overflow-hidden rounded-xl border border-dashed border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50/80">
-      <div className="flex min-h-[240px] flex-col items-center justify-center gap-2 p-4 text-center">
-        <span className="text-2xl text-slate-300" aria-hidden>
-          📷
-        </span>
-        <span className="text-xs font-medium text-slate-500">{alt}</span>
-        <span className="text-[10px] uppercase tracking-wide text-slate-400">
-          Photo coming soon
-        </span>
-      </div>
-      {caption ? (
-        <figcaption className="border-t border-slate-100 px-3 py-2 text-xs text-slate-500">
-          {caption}
+    <div
+      className="absolute inset-0 z-10 flex items-center justify-center bg-slate-100/95"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span className="sr-only">{label}</span>
+      <span
+        className="h-7 w-7 shrink-0 animate-spin rounded-full border-2 border-slate-200 border-t-slate-900"
+        aria-hidden
+      />
+    </div>
+  );
+}
+
+/** Loads when element enters viewport (callback ref so it works after mount). */
+function useInView(rootMargin = "200px") {
+  const [node, setNode] = useState(null);
+  const [inView, setInView] = useState(false);
+
+  const ref = useCallback((el) => {
+    setNode(el);
+  }, []);
+
+  useEffect(() => {
+    if (!node) {
+      setInView(false);
+      return;
+    }
+
+    setInView(false);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin, threshold: 0.01 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node, rootMargin]);
+
+  return { ref, inView };
+}
+
+function ImageWithLoader({
+  src,
+  alt,
+  className,
+  imgClassName,
+  minHeightClass,
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [src]);
+
+  const markDone = useCallback(() => setLoaded(true), []);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (el?.complete && el.naturalHeight > 0) markDone();
+  }, [src, markDone]);
+
+  return (
+    <div className={`relative ${minHeightClass ?? "min-h-[200px]"}`}>
+      {!loaded ? <LoadingSpinner label={`Loading ${alt}`} /> : null}
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        decoding="async"
+        onLoad={markDone}
+        onError={markDone}
+        className={`relative z-0 transition-opacity duration-200 ${
+          loaded ? "opacity-100" : "opacity-0"
+        } ${imgClassName ?? ""} ${className ?? ""}`}
+      />
+    </div>
+  );
+}
+
+function FolderPoster({ poster }) {
+  const { ref, inView } = useInView("80px");
+
+  return (
+    <div
+      ref={ref}
+      className="relative mb-3 hidden aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-inner md:block"
+    >
+      {!inView ? (
+        <LoadingSpinner label="Loading poster" />
+      ) : (
+        <ImageWithLoader
+          src={poster.src}
+          alt={poster.alt}
+          minHeightClass="min-h-0 h-full"
+          className="aspect-[3/4] w-full"
+          imgClassName="aspect-[3/4] w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
+        />
+      )}
+    </div>
+  );
+}
+
+function LazyGalleryPhoto({ photo }) {
+  const { ref, inView } = useInView("200px");
+
+  if (!photo.src) {
+    return (
+      <figure
+        ref={ref}
+        className="flex min-h-[200px] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-xs text-slate-400"
+      >
+        {inView ? "Photo coming soon" : null}
+      </figure>
+    );
+  }
+
+  return (
+    <figure
+      ref={ref}
+      className="relative min-h-[200px] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm"
+    >
+      {!inView ? (
+        <div className="flex min-h-[200px] items-center justify-center">
+          <LoadingSpinner label="Loading photo" />
+        </div>
+      ) : (
+        <ImageWithLoader
+          src={photo.src}
+          alt={photo.alt}
+          minHeightClass="min-h-[200px]"
+          imgClassName="block w-full h-auto max-h-[min(85vh,640px)] object-contain"
+        />
+      )}
+      {photo.caption ? (
+        <figcaption className="border-t border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
+          {photo.caption}
         </figcaption>
       ) : null}
     </figure>
   );
 }
 
-function GalleryPhoto({ photo }) {
-  if (photo.src) {
-    return (
-      <figure className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
-        <img
-          src={photo.src}
-          alt={photo.alt}
-          loading="lazy"
-          decoding="async"
-          className="block w-full h-auto max-h-[min(85vh,640px)] object-contain"
-        />
-        {photo.caption ? (
-          <figcaption className="border-t border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
-            {photo.caption}
-          </figcaption>
-        ) : null}
-      </figure>
-    );
-  }
-
-  return <PhotoPlaceholder alt={photo.alt} caption={photo.caption} />;
-}
-
-function FolderPoster({ poster }) {
-  return (
-    <div className="mb-3 hidden overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-inner md:block">
-      <img
-        src={poster.src}
-        alt={poster.alt}
-        className="aspect-[3/4] w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
-        loading="lazy"
-        decoding="async"
-      />
-    </div>
-  );
-}
-
 export function GallerySection() {
-  const [activeId, setActiveId] = useState(GALLERY_EVENTS[0]?.id ?? null);
-  const active =
-    GALLERY_EVENTS.find((e) => e.id === activeId) ?? GALLERY_EVENTS[0];
+  const [activeId, setActiveId] = useState(null);
+  const active = GALLERY_EVENTS.find((e) => e.id === activeId) ?? null;
   const activePhotos = active ? getGalleryPhotos(active) : [];
+
+  function selectEvent(id) {
+    setActiveId(id);
+    requestAnimationFrame(() => {
+      document
+        .getElementById("gallery-panel")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   return (
     <section aria-labelledby="gallery-heading">
@@ -80,19 +178,19 @@ export function GallerySection() {
         Gallery
       </h2>
       <p className="mb-8 max-w-2xl text-slate-600">
-        Monthly big events — click a poster to view tournament photos below.
+        Monthly big events — pick a month. Photos load as you scroll (ImageKit
+        friendly).
       </p>
 
       <ul className="mb-10 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {GALLERY_EVENTS.map((event) => {
-          const isActive = event.id === active?.id;
-          const hasPhotos = galleryHasPhotos(event);
+          const isActive = event.id === activeId;
 
           return (
             <li key={event.id}>
               <button
                 type="button"
-                onClick={() => setActiveId(event.id)}
+                onClick={() => selectEvent(event.id)}
                 aria-pressed={isActive}
                 aria-controls="gallery-panel"
                 aria-expanded={isActive}
@@ -110,18 +208,9 @@ export function GallerySection() {
                   </div>
                 )}
 
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
-                    {event.month}
-                  </p>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                      hasPhotos
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-slate-100 text-slate-500"
-                    }`}
-                  ></span>
-                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+                  {event.month}
+                </p>
 
                 <h3 className="mb-2 font-black italic text-lg text-slate-900 group-hover:text-blue-800">
                   {event.title}
@@ -139,7 +228,7 @@ export function GallerySection() {
       {active ? (
         <div
           id="gallery-panel"
-          className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 md:p-8"
+          className="scroll-mt-24 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 md:p-8"
           role="region"
           aria-label={`${active.title} photos`}
         >
@@ -159,7 +248,7 @@ export function GallerySection() {
                   key={photo.src ?? `${active.id}-${i}`}
                   className="break-inside-avoid"
                 >
-                  <GalleryPhoto photo={photo} />
+                  <LazyGalleryPhoto photo={photo} />
                 </li>
               ))}
             </ul>

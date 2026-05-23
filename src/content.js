@@ -160,11 +160,6 @@ export function getGalleryPhotos(event) {
     return event.photos ?? []
 }
 
-export function galleryHasPhotos(event) {
-    if (event.imageKit) return true
-    return (event.photos ?? []).some((p) => p.src)
-}
-
 /** Monthly big events — poster on folder; photos load below on click */
 export const GALLERY_EVENTS = [
     {
@@ -173,7 +168,7 @@ export const GALLERY_EVENTS = [
         title: 'Sentinel Games Opening — Limit Break Tournament',
 
         poster: {
-            src: '/gallery/PosterMay.JPG',
+            src: '/gallery/PosterMay.jpg',
             alt: 'Sentinel Games Opening Limit Break Tournament poster — 23 May 2026, Singapore',
         },
         imageKit: {
