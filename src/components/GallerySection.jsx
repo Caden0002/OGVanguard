@@ -177,10 +177,7 @@ export function GallerySection() {
       >
         Gallery
       </h2>
-      <p className="mb-8 max-w-2xl text-slate-600">
-        Monthly big events — pick a month. Photos load as you scroll (ImageKit
-        friendly).
-      </p>
+      <p className="mb-8 max-w-2xl text-slate-600">Monthly big events</p>
 
       <ul className="mb-10 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {GALLERY_EVENTS.map((event) => {
