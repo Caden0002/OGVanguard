@@ -198,11 +198,7 @@ export const GALLERY_EVENTS = [
 ]
 
 export const NAV_LINKS = [
-    {
-        label: 'Join',
-        href: WHATSAPP_COMMUNITY_URL,
-        external: true,
-    },
+
     { label: 'Gallery', href: '/gallery' },
     { label: 'Shop', href: '/#buy' },
     {

@@ -16,9 +16,9 @@ export function HeroSection() {
         <div className="absolute left-1/2 top-1/2 z-0 aspect-square w-[min(88vw,440px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgb(191_219_254/0.85)_0%,rgb(147_197_253/0.5)_32%,rgb(96_165_250/0.22)_52%,transparent_72%)] blur-2xl md:w-[min(78vw,500px)]" />
         <div className="absolute left-1/2 top-1/2 z-0 aspect-square w-[min(42vw,200px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-200/70 blur-xl md:w-[min(36vw,220px)]" />
         <img
-          src="/vg-circle.png"
+          src="/vg-circle.svg"
           alt=""
-          className="relative z-[1] w-[min(82vw,420px)] object-contain brightness-[1.22] saturate-[0.82] hue-rotate-[-6deg] contrast-[1.02] drop-shadow-[0_0_36px_rgb(186_230_253/0.75)] md:w-[min(72vw,480px)]"
+          className="animate-vg-circle-spin relative z-[1] w-[min(82vw,420px)] object-contain brightness-[1.22] saturate-[0.82] hue-rotate-[-6deg] contrast-[1.02] drop-shadow-[0_0_36px_rgb(186_230_253/0.75)] md:w-[min(72vw,480px)]"
           decoding="async"
         />
       </div>

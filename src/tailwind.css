@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @layer base {
   /* Match SiteFooter bg so iOS/Android overscroll past the page isn’t stark white. */
@@ -14,5 +14,32 @@
 }
 
 @theme {
-  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Guard circle: spin + breathing scale (hero vg-circle.svg) */
+@keyframes vg-circle-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  15% {
+    transform: rotate(90deg) scale(1.5);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-vg-circle-spin {
+    animation: vg-circle-spin 10s linear infinite;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-vg-circle-spin {
+      animation: none;
+    }
+  }
 }
