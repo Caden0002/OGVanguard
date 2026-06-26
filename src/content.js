@@ -6,7 +6,7 @@ export const TOURNAMENT = {
 }
 
 export const WHATSAPP_COMMUNITY_URL =
-    'https://chat.whatsapp.com/FliaDgWZ51v8KypAGQpDKo'
+    'https://chat.whatsapp.com/IfcCkYj1lMYEZl4Jfgi9rk?mode=gi_t'
 
 export const CARD_SHOPS = [
     {
