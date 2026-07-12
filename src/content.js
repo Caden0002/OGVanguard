@@ -1,3 +1,5 @@
+import { href } from "react-router-dom"
+
 export const TOURNAMENT = {
     title: 'OG Classic Format Singapore',
     subtitle:
@@ -107,6 +109,21 @@ export const COMMUNITY_DECKLIST = {
     title: 'Community Tournament decklist',
     body: "See what's popular among the community.",
     href: 'https://www.ogcfvsingapore.com/decklist',
+}
+
+export const MANGA = {
+    title: 'Read OG Manga',
+    href: 'https://comix.to/browse?q=%E3%82%AB%E3%83%BC%E3%83%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%88!!%20%E3%83%B4%E3%82%A1%E3%83%B3%E3%82%AC%E3%83%BC%E3%83%89&sort=relevance%3Adesc',
+}
+
+export const ANIME = {
+    title: 'Watch OG Anime (Remastered)',
+    href: 'https://www.youtube.com/playlist?list=PLZaz0lCoygoyExP1v8HLYXFg95wI30_PY',
+}
+
+export const MONTHLY_BUSHIROAD = {
+    title: 'Monthly Bushiroad Magazine',
+    href: 'https://gekkan-bushi.com/cover-library/#2013',
 }
 
 export const LEADERS = ['Eugene', 'Lester', 'Yuhang', 'Gabriel', 'Spencer', 'Caden']

@@ -8,6 +8,7 @@ import { SiteFooter } from "../components/SiteFooter.jsx";
 import { SiteHeader } from "../components/SiteHeader.jsx";
 import { StatsBar } from "../components/StatsBar.jsx";
 import { WhalesSection } from "../components/WhalesSection.jsx";
+import { MangaSection } from "../components/MangaSection.jsx";
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <CreatorsSection />
         <BuySection />
         <MetaSection />
+        <MangaSection />
         <OtherOgGroupsSection />
 
         <WhalesSection />
