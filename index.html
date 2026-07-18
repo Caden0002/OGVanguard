@@ -1,63 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-SG">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/vg-circle.png" />
-    <link rel="apple-touch-icon" href="/vg-circle.png" />
-    <meta name="apple-mobile-web-app-title" content="OG VG Directory" />
+
+    <!-- Responsive layout -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0f172a" />
-    <meta
-      name="keywords"
-      content="Cardfight Vanguard, Vanguard OG, Singapore, OG Classic, Vintage Vanguard, TCG, cardshops, tournaments, Kagero, community"
-    />
+
+    <!-- Primary SEO -->
+    <title>OG Vanguard Singapore | Tournaments, Deck Lists & Community</title>
+
     <meta
       name="description"
-      content="Tournaments, local shops, players, creators for OG VG in Singapore."
+      content="Singapore's OG Cardfight!! Vanguard community hub featuring tournament schedules, standings, deck lists, event galleries, local card shops, player profiles, and classic Vanguard resources."
     />
-    <link rel="canonical" href="https://ogvanguard.com/" />
-    <meta property="og:site_name" content="OG VG Directory - Singapore" />
+
+    <!-- Google generally ignores meta keywords, but keeping this is harmless -->
+    <meta
+      name="keywords"
+      content="OG Vanguard Singapore, Cardfight Vanguard Singapore, classic Vanguard, vintage Vanguard, Vanguard tournaments, Vanguard deck lists, Vanguard community, Vanguard card shops Singapore"
+    />
+
+    <meta name="author" content="OG Vanguard Singapore" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large" />
+
+    <!-- Canonical URL: use only one preferred domain version everywhere -->
+    <link rel="canonical" href="https://www.ogvanguard.com/" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/webp" href="/webLogo.webp" />
+    <link rel="apple-touch-icon" href="/webLogo.webp" />
+
+    <!-- Browser and mobile appearance -->
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-title" content="OG Vanguard Singapore" />
+
+    <!-- Open Graph: Facebook, Discord, WhatsApp, Telegram, LinkedIn -->
+    <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_SG" />
-    <meta property="og:url" content="https://ogvanguard.com/" />
-    <meta property="og:title" content="OG VG Directory - Singapore" />
+    <meta property="og:site_name" content="OG Vanguard Singapore" />
+    <meta property="og:url" content="https://www.ogvanguard.com/" />
+
+    <meta
+      property="og:title"
+      content="OG Vanguard Singapore | Tournaments, Deck Lists & Community"
+    />
+
     <meta
       property="og:description"
-      content="Tournaments, local shops, players, creators for OG VG in Singapore."
+      content="Tournament schedules, standings, deck lists, event galleries, local card shops, players, and community resources for OG Cardfight!! Vanguard in Singapore."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://ogvanguard.com/vg-circle.png" />
+
+    <meta
+      property="og:image"
+      content="https://www.ogvanguard.com/og-vanguard-social-preview.png"
+    />
+
+    <meta
+      property="og:image:secure_url"
+      content="https://www.ogvanguard.com/og-vanguard-social-preview.png"
+    />
+
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
     <meta
       property="og:image:alt"
-      content="OG VG Directory — circular emblem logo"
+      content="OG Vanguard Singapore community, tournaments, deck lists, and gallery"
     />
+
+    <!-- X / Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="OG VG Directory - Singapore" />
+
+    <meta
+      name="twitter:title"
+      content="OG Vanguard Singapore | Tournaments, Deck Lists & Community"
+    />
+
     <meta
       name="twitter:description"
-      content="Tournaments, local shops, players, creators for OG VG in Singapore."
+      content="Explore tournament schedules, standings, deck lists, galleries, local card shops, players, and OG Cardfight!! Vanguard resources in Singapore."
     />
-    <meta name="twitter:image" content="https://ogvanguard.com/vg-circle.png" />
-    <title>OG VG Directory - Singapore</title>
-    <!-- Google tag (gtag.js) -->
+
+    <meta
+      name="twitter:image"
+      content="https://www.ogvanguard.com/og-vanguard-social-preview.png"
+    />
+
+    <meta
+      name="twitter:image:alt"
+      content="OG Vanguard Singapore community website"
+    />
+
+    <!-- Structured data: website -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://www.ogvanguard.com/#website",
+        "url": "https://www.ogvanguard.com/",
+        "name": "OG Vanguard Singapore",
+        "alternateName": [
+          "Singapore OG Vanguard",
+          "OG VG Singapore",
+          "OG Vanguard Community Singapore"
+        ],
+        "description": "Singapore's community hub for OG Cardfight!! Vanguard tournaments, standings, deck lists, event galleries, players, local card shops, and classic Vanguard resources.",
+        "inLanguage": "en-SG"
+      }
+    </script>
+
+    <!-- Structured data: community organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://www.ogvanguard.com/#organization",
+        "name": "OG Vanguard Singapore",
+        "url": "https://www.ogvanguard.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.ogvanguard.com/vg-circle.png"
+        },
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://www.ogvanguard.com/og-vanguard-social-preview.png",
+          "width": 1200,
+          "height": 630
+        },
+        "description": "A Singapore community for OG-era Cardfight!! Vanguard players, tournaments, deck lists, galleries, local shops, and community resources.",
+        "areaServed": {
+          "@type": "Country",
+          "name": "Singapore"
+        }
+      }
+    </script>
+
+    <!-- Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-Z8B07Y0JM4"
     ></script>
+
     <script>
       window.dataLayer = window.dataLayer || [];
+
       function gtag() {
-        dataLayer.push(arguments);
+        window.dataLayer.push(arguments);
       }
+
       gtag("js", new Date());
       gtag("config", "G-Z8B07Y0JM4");
     </script>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,800;0,900;1,800;1,900&display=swap"
       rel="stylesheet"
     />
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
