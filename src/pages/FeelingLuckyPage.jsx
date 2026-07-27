@@ -310,6 +310,8 @@ const DOUBLE_CRIT_CLIP_SRCS = [
  */
 const DOUBLE_CRIT_CLIP_DISPLAY_MS = [2200, 5900, 3000];
 
+const DOUBLE_CRIT_ZFDP_SRC = "/zfdp.svg";
+
 /** Preload card PNGs once on mount (lightweight). */
 function useFeelingLuckyImagePreload() {
   useEffect(() => {
@@ -328,12 +330,14 @@ function useDoubleCritClipPreload(scenarioIndex, doubleCritVideoIndex) {
   useEffect(() => {
     if (scenarioIndex !== 3) return undefined;
 
-    const src = DOUBLE_CRIT_CLIP_SRCS[doubleCritVideoIndex];
-    const img = new Image();
-    img.src = src;
+    const clip = new Image();
+    clip.src = DOUBLE_CRIT_CLIP_SRCS[doubleCritVideoIndex];
+    const zfdp = new Image();
+    zfdp.src = DOUBLE_CRIT_ZFDP_SRC;
 
     return () => {
-      img.src = "";
+      clip.src = "";
+      zfdp.src = "";
     };
   }, [scenarioIndex, doubleCritVideoIndex]);
 }
@@ -605,6 +609,14 @@ export function FeelingLuckyPage() {
               )
             ) : (
               <div className="flex max-w-[min(100%,14rem)] flex-col items-center gap-2 text-center">
+                {bothTriggersPlaybackDone ? (
+                  <img
+                    src={DOUBLE_CRIT_ZFDP_SRC}
+                    alt=""
+                    className="max-h-28 w-full max-w-[12rem] object-contain"
+                    draggable={false}
+                  />
+                ) : null}
                 <p className="text-xs font-semibold leading-snug text-slate-800">
                   Good job, Zifei exploded
                 </p>
