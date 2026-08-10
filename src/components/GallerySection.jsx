@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GALLERY_EVENTS, getGalleryPhotos } from "../content.js";
+import { GalleryTournamentVods } from "./GalleryTournamentVods.jsx";
 import { SectionLabel } from "./SectionLabel.jsx";
 
 function LoadingSpinner({ label = "Loading image" }) {
@@ -232,7 +233,11 @@ export function GallerySection() {
                 </h3>
 
                 <p className="mt-auto text-xs font-medium text-slate-400">
-                  {isActive ? "Showing photos below" : "Click to view photos"}
+                  {isActive
+                    ? "Showing photos below"
+                    : event.vods?.length
+                      ? "Click to view photos & VODs"
+                      : "Click to view photos"}
                 </p>
               </button>
             </li>
@@ -255,6 +260,8 @@ export function GallerySection() {
               {active.title}
             </h3>
           </div>
+
+          <GalleryTournamentVods videos={active.vods} />
 
           {activePhotos.length > 0 ? (
             <ul className="list-none columns-2 gap-4 p-0 sm:columns-3 lg:columns-4 [&>li]:mb-4">

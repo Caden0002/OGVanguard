@@ -219,6 +219,16 @@ export const GALLERY_EVENTS = [
             count: 23,
             ext: 'jpeg',
         },
+        vods: [
+            {
+                label: 'Swiss',
+                href: 'https://www.youtube.com/watch?v=K2tNowteWxk&t=814s',
+            },
+            {
+                label: 'Top 8',
+                href: 'https://www.youtube.com/watch?v=nffZbhTB3oc&t=2032s',
+            },
+        ],
     },
     {
         id: '2026-07-circuit-bash-finals',
@@ -235,6 +245,20 @@ export const GALLERY_EVENTS = [
             count: 9,
             ext: 'jpg',
         },
+        vods: [
+            {
+                label: 'R1 & 2',
+                href: 'https://www.youtube.com/watch?v=ObfjwN8b5AY',
+            },
+            {
+                label: 'Top 4',
+                href: 'https://www.youtube.com/watch?v=rliGKa_206g&t=4s',
+            },
+            {
+                label: 'Top 2',
+                href: 'https://www.youtube.com/watch?v=CYWXzM3bVAM',
+            },
+        ],
     },
     {
         id: '2026-05-sentinel-limit-break',
@@ -251,6 +275,16 @@ export const GALLERY_EVENTS = [
             count: 30,
             ext: 'jpg',
         },
+        vods: [
+            {
+                label: 'Swiss',
+                href: 'https://www.youtube.com/watch?v=3DNqKDvpzLc&t=1204s',
+            },
+            {
+                label: 'Top 8',
+                href: 'https://www.youtube.com/watch?v=-bbzydJYA30&t=1284s',
+            },
+        ],
     },
     {
         id: '2026-04-mint-limit-break',
@@ -267,6 +301,12 @@ export const GALLERY_EVENTS = [
             count: 11,
             ext: 'jpg',
         },
+        vods: [
+            {
+                label: 'Swiss',
+                href: 'https://www.youtube.com/watch?v=eJW1K8q325U&t=1586s',
+            },
+        ],
     },
 
 ]
