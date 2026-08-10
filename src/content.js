@@ -7,6 +7,18 @@ export const TOURNAMENT = {
     href: 'https://www.ogcfvsingapore.com/',
 }
 
+/** Full-width promo banners between StatsBar and main content — remove entries to hide. */
+export const ONGOING_EVENTS = [
+    {
+        label: 'Ongoing',
+        title: 'Circuit Bash Season 2',
+        detail: '',
+        highlight: 'Accumulate Points, Big Prizes',
+        href: TOURNAMENT.href,
+        cta: 'Join the circuit',
+    },
+]
+
 export const WHATSAPP_COMMUNITY_URL =
     'https://chat.whatsapp.com/IfcCkYj1lMYEZl4Jfgi9rk?mode=gi_t'
 
@@ -179,6 +191,22 @@ export function getGalleryPhotos(event) {
 
 /** Monthly big events — poster on folder; photos load below on click */
 export const GALLERY_EVENTS = [
+    {
+        id: '2026-08-sentinel-limit-break',
+        month: 'August 2026',
+        title: 'Sentinel Games August Big Tournament',
+
+        poster: {
+            src: '/gallery/PosterAug.jpg',
+            alt: 'Sentinel Games Limit Break Tournament poster — 8 August 2026, Singapore',
+        },
+        imageKit: {
+            folderPath: '8 Aug 2026',
+            prefix: '88',
+            count: 23,
+            ext: 'jpeg',
+        },
+    },
     {
         id: '2026-05-sentinel-limit-break',
         month: 'May 2026',

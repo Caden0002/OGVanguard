@@ -1,5 +1,6 @@
 import { BuySection } from "../components/BuySection.jsx";
 import { CreatorsSection } from "../components/CreatorsSection.jsx";
+import { EventBanner } from "../components/EventBanner.jsx";
 import { HeroSection } from "../components/HeroSection.jsx";
 import { MetaSection } from "../components/MetaSection.jsx";
 import { OtherOgGroupsSection } from "../components/OtherOgGroupsSection.jsx";
@@ -16,6 +17,7 @@ export default function HomePage() {
       <SiteHeader />
       <HeroSection />
       <StatsBar />
+      <EventBanner />
       <main className="mx-auto w-full max-w-6xl flex-1 space-y-20 px-6 py-16 md:space-y-24 md:px-10 md:py-20">
         <ShopsSection />
         <CreatorsSection />

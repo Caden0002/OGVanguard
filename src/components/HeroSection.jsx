@@ -49,7 +49,16 @@ export function HeroSection() {
             external={true}
             variant="primary"
           >
-            Join the scene
+            <span className="inline-flex items-center justify-center gap-2 md:justify-start">
+              Join the scene
+              <svg
+                className="h-4 w-4 shrink-0"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <use href="/icons.svg#whatsapp-icon" />
+              </svg>
+            </span>
           </SkewCta>
           <SkewCta href={TOURNAMENT.href} external={true} variant="secondary">
             See upcoming events
