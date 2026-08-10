@@ -2,7 +2,7 @@ import { COMMUNITY_DECKLIST, META } from "../content.js";
 import { SectionLabel } from "./SectionLabel.jsx";
 import { SkewCta } from "./SkewCta.jsx";
 
-function DecklistCard({ headingId, title, body, href, cta, variant }) {
+function DecklistCard({ headingId, title, body, href, cta, variant, external = true }) {
   return (
     <div className="flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between md:p-8">
       <div className="min-w-0 flex-1">
@@ -14,7 +14,7 @@ function DecklistCard({ headingId, title, body, href, cta, variant }) {
         </h2>
         <p className="max-w-xl text-slate-600">{body}</p>
       </div>
-      <SkewCta href={href} external={true} variant={variant}>
+      <SkewCta href={href} external={external} variant={variant}>
         {cta}
       </SkewCta>
     </div>
@@ -39,8 +39,9 @@ export function MetaSection() {
           title={COMMUNITY_DECKLIST.title}
           body={COMMUNITY_DECKLIST.body}
           href={COMMUNITY_DECKLIST.href}
-          cta="Browse decklists"
+          cta="View gallery"
           variant="secondary"
+          external={false}
         />
       </div>
     </section>

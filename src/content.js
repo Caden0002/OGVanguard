@@ -1,12 +1,3 @@
-import { href } from "react-router-dom"
-
-export const TOURNAMENT = {
-    title: 'OG Classic Format Singapore',
-    subtitle:
-        'Schedules, registration, and updates for the official Singapore hub.',
-    href: 'https://www.ogcfvsingapore.com/',
-}
-
 /** Full-width promo banners between StatsBar and main content — remove entries to hide. */
 export const ONGOING_EVENTS = [
     {
@@ -14,7 +5,6 @@ export const ONGOING_EVENTS = [
         title: 'Circuit Bash Season 2',
         detail: '',
         highlight: 'Accumulate Points, Win Big Prizes',
-        href: TOURNAMENT.href,
         cta: 'Join the circuit',
         ctaDisabled: true,
     },
@@ -121,7 +111,7 @@ export const META = {
 export const COMMUNITY_DECKLIST = {
     title: 'Community Tournament decklist',
     body: "See what's popular among the community.",
-    href: 'https://www.ogcfvsingapore.com/decklist',
+    href: '/gallery',
 }
 
 export const MEDIA_SECTION = {
@@ -285,12 +275,6 @@ export const NAV_LINKS = [
 
     { label: 'Gallery', href: '/gallery' },
     { label: 'Shop', href: '/#buy' },
-    {
-        label: 'Upcoming Tournament',
-        href: 'https://www.ogcfvsingapore.com/',
-        external: true,
-    },
-
     { label: 'Feeling lucky', href: '/feelinglucky' },
 
 ]

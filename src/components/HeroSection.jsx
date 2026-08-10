@@ -1,4 +1,4 @@
-import { TOURNAMENT, WHATSAPP_COMMUNITY_URL } from "../content.js";
+import { WHATSAPP_COMMUNITY_URL } from "../content.js";
 import { SkewCta } from "./SkewCta.jsx";
 
 export function HeroSection() {
@@ -59,9 +59,6 @@ export function HeroSection() {
                 <use href="/icons.svg#whatsapp-icon" />
               </svg>
             </span>
-          </SkewCta>
-          <SkewCta href={TOURNAMENT.href} external={true} variant="secondary">
-            See upcoming events
           </SkewCta>
         </div>
       </div>
