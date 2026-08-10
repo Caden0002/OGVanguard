@@ -97,17 +97,18 @@ function FolderPoster({ poster }) {
   return (
     <div
       ref={ref}
-      className="relative mb-3 hidden aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-inner md:block"
+      className="relative mb-3 aspect-[3/4] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-inner"
     >
       {!inView ? (
         <LoadingSpinner label="Loading poster" />
       ) : (
         <ImageWithLoader
+          key={poster.src}
           src={poster.src}
           alt={poster.alt}
-          minHeightClass="min-h-0 h-full"
-          className="aspect-[3/4] w-full"
-          imgClassName="aspect-[3/4] w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
+          minHeightClass="absolute inset-0 size-full"
+          className="size-full"
+          imgClassName="size-full object-cover object-center transition duration-300 group-hover:scale-[1.02]"
         />
       )}
     </div>
@@ -116,12 +117,13 @@ function FolderPoster({ poster }) {
 
 function LazyGalleryPhoto({ photo }) {
   const { ref, inView } = useInView("200px");
+  const [loaded, setLoaded] = useState(false);
 
   if (!photo.src) {
     return (
       <figure
         ref={ref}
-        className="flex min-h-[200px] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-xs text-slate-400"
+        className="flex aspect-[4/3] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-xs text-slate-400"
       >
         {inView ? "Photo coming soon" : null}
       </figure>
@@ -131,19 +133,35 @@ function LazyGalleryPhoto({ photo }) {
   return (
     <figure
       ref={ref}
-      className="relative min-h-[200px] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm"
+      className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
     >
       {!inView ? (
-        <div className="flex min-h-[200px] items-center justify-center">
-          <LoadingSpinner label="Loading photo" />
-        </div>
-      ) : (
-        <ImageWithLoader
-          src={photo.src}
-          alt={photo.alt}
-          minHeightClass="min-h-[200px]"
-          imgClassName="block w-full h-auto max-h-[min(85vh,640px)] object-contain"
+        <div
+          className="aspect-[4/3] animate-pulse bg-slate-100"
+          aria-hidden
         />
+      ) : (
+        <div className={`relative w-full ${loaded ? "" : "min-h-[7rem]"}`}>
+          {!loaded ? (
+            <div
+              className="absolute inset-0 z-10 flex min-h-[7rem] items-center justify-center bg-slate-50/95"
+              aria-busy="true"
+            >
+              <LoadingSpinner label={`Loading ${photo.alt}`} />
+            </div>
+          ) : null}
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            decoding="async"
+            loading="lazy"
+            onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
+            className={`block h-auto w-full transition-opacity duration-200 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        </div>
       )}
       {photo.caption ? (
         <figcaption className="border-t border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
@@ -184,14 +202,14 @@ export function GallerySection() {
           const isActive = event.id === activeId;
 
           return (
-            <li key={event.id}>
+            <li key={event.id} className="h-full">
               <button
                 type="button"
                 onClick={() => selectEvent(event.id)}
                 aria-pressed={isActive}
                 aria-controls="gallery-panel"
                 aria-expanded={isActive}
-                className={`group flex w-full flex-col rounded-2xl border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:p-5 ${
+                className={`group flex h-full w-full flex-col rounded-2xl border p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:p-5 ${
                   isActive
                     ? "border-blue-300 bg-blue-50/60 ring-2 ring-blue-200"
                     : "border-slate-200 bg-white hover:border-blue-200"
@@ -200,7 +218,7 @@ export function GallerySection() {
                 {event.poster ? (
                   <FolderPoster poster={event.poster} />
                 ) : (
-                  <div className="mb-3 hidden aspect-[3/4] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-400 md:flex">
+                  <div className="mb-3 flex aspect-[3/4] w-full items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-400">
                     Poster coming soon
                   </div>
                 )}
@@ -209,11 +227,11 @@ export function GallerySection() {
                   {event.month}
                 </p>
 
-                <h3 className="mb-2 font-black italic text-lg text-slate-900 group-hover:text-blue-800">
+                <h3 className="mb-2 min-h-[3.25rem] font-black italic text-lg leading-snug text-slate-900 group-hover:text-blue-800">
                   {event.title}
                 </h3>
 
-                <p className="mt-3 text-xs font-medium text-slate-400">
+                <p className="mt-auto text-xs font-medium text-slate-400">
                   {isActive ? "Showing photos below" : "Click to view photos"}
                 </p>
               </button>

@@ -208,6 +208,22 @@ export const GALLERY_EVENTS = [
         },
     },
     {
+        id: '2026-07-circuit-bash-finals',
+        month: 'July 2026',
+        title: 'Circuit Bash Season 1 Finals',
+
+        poster: {
+            src: '/gallery/PosterCC1.jpg',
+            alt: 'Circuit Bash Season 1 Finals — July 2026, Singapore',
+        },
+        imageKit: {
+            folderPath: 'Circuit Bash 1',
+            prefix: 'CC1',
+            count: 9,
+            ext: 'jpg',
+        },
+    },
+    {
         id: '2026-05-sentinel-limit-break',
         month: 'May 2026',
         title: 'Sentinel Games Opening — Limit Break Tournament',
