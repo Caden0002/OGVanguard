@@ -13,9 +13,10 @@ export const ONGOING_EVENTS = [
         label: 'Ongoing',
         title: 'Circuit Bash Season 2',
         detail: '',
-        highlight: 'Accumulate Points, Big Prizes',
+        highlight: 'Accumulate Points, Win Big Prizes',
         href: TOURNAMENT.href,
         cta: 'Join the circuit',
+        ctaDisabled: true,
     },
 ]
 
@@ -123,19 +124,41 @@ export const COMMUNITY_DECKLIST = {
     href: 'https://www.ogcfvsingapore.com/decklist',
 }
 
-export const MANGA = {
-    title: 'Read OG Manga',
-    href: 'https://comix.to/browse?q=%E3%82%AB%E3%83%BC%E3%83%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%88!!%20%E3%83%B4%E3%82%A1%E3%83%B3%E3%82%AC%E3%83%BC%E3%83%89&sort=relevance%3Adesc',
-}
-
-export const ANIME = {
-    title: 'Watch OG Anime (Remastered)',
-    href: 'https://www.youtube.com/playlist?list=PLZaz0lCoygoyExP1v8HLYXFg95wI30_PY',
-}
-
-export const MONTHLY_BUSHIROAD = {
-    title: 'Monthly Bushiroad Magazine',
-    href: 'https://gekkan-bushi.com/cover-library/#2013',
+export const MEDIA_SECTION = {
+    sectionLabel: 'Manga & anime',
+    title: 'Lore & Story',
+    body: 'Catch up on the story, rewatch the remaster, or flip through old Bushiroad magazines.',
+    items: [
+        {
+            id: 'manga-heading',
+            label: 'Manga',
+            title: 'Read OG Manga',
+            href: 'https://comix.to/browse?q=%E3%82%AB%E3%83%BC%E3%83%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%88!!%20%E3%83%B4%E3%82%A1%E3%83%B3%E3%82%AC%E3%83%BC%E3%83%89&sort=relevance%3Adesc',
+            description:
+                'Read the OG Cardfight!! Vanguard story arc from the beginning.',
+            cta: 'Open reader',
+            accent: 'sky',
+        },
+        {
+            id: 'anime-heading',
+            label: 'Anime',
+            title: 'Watch OG Anime (Remastered)',
+            href: 'https://www.youtube.com/playlist?list=PLZaz0lCoygoyExP1v8HLYXFg95wI30_PY',
+            description: 'Rewatch the remastered OG Vanguard Anime on HD.',
+            cta: 'Watch playlist',
+            accent: 'rose',
+        },
+        {
+            id: 'magazine-heading',
+            label: 'Magazine',
+            title: 'Monthly Bushiroad Magazine',
+            href: 'https://gekkan-bushi.com/cover-library/#2013',
+            description:
+                'Browse classic Monthly Bushiroad covers and lore from the OG era.',
+            cta: 'Browse covers',
+            accent: 'violet',
+        },
+    ],
 }
 
 export const LEADERS = ['Eugene', 'Lester', 'Yuhang', 'Gabriel', 'Spencer', 'Caden']

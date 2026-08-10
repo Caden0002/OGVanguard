@@ -1,58 +1,71 @@
-import {
-  COMMUNITY_DECKLIST,
-  MANGA,
-  ANIME,
-  MONTHLY_BUSHIROAD,
-} from "../content.js";
+import { MEDIA_SECTION } from "../content.js";
 import { SectionLabel } from "./SectionLabel.jsx";
-import { SkewCta } from "./SkewCta.jsx";
 
-function InfoCard({ headingId, title, href, cta, variant }) {
-  return (
-    <div className="flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between md:p-8">
-      <div className="min-w-0 flex-1">
-        <h2
-          id={headingId}
-          className="mb-2 font-black uppercase italic tracking-tight text-slate-900 max-md:text-2xl md:text-3xl"
-        >
-          {title}
-        </h2>
-      </div>
-      <SkewCta href={href} external={true} variant={variant}>
-        {cta}
-      </SkewCta>
-    </div>
-  );
-}
+const ACCENT_STYLES = {
+  sky: {
+    badgeClass: "bg-sky-50 text-sky-700",
+    hoverClass: "hover:border-sky-300 group-hover:text-sky-800",
+  },
+  rose: {
+    badgeClass: "bg-rose-50 text-rose-700",
+    hoverClass: "hover:border-rose-300 group-hover:text-rose-800",
+  },
+  violet: {
+    badgeClass: "bg-violet-50 text-violet-700",
+    hoverClass: "hover:border-violet-300 group-hover:text-violet-800",
+  },
+};
 
 export function MangaSection() {
   return (
-    <section id="meta" aria-labelledby="meta-heading">
-      <SectionLabel>Mangas & Anime</SectionLabel>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <InfoCard
-          headingId="meta-heading"
-          title={MANGA.title}
-          href={MANGA.href}
-          cta="→"
-          variant="primary"
-        />
-        <InfoCard
-          headingId="community-decklist-heading"
-          title={ANIME.title}
-          href={ANIME.href}
-          cta="→"
-          variant="secondary"
-        />
-        <InfoCard
-          headingId="community-decklist-heading"
-          title={MONTHLY_BUSHIROAD.title}
-          body={MONTHLY_BUSHIROAD.body}
-          href={MONTHLY_BUSHIROAD.href}
-          cta="→"
-          variant="primary"
-        />
-      </div>
+    <section id="media" aria-labelledby="media-heading">
+      <SectionLabel>{MEDIA_SECTION.sectionLabel}</SectionLabel>
+      <h2
+        id="media-heading"
+        className="mb-4 font-black uppercase italic tracking-tight text-slate-900 max-md:text-2xl md:text-4xl"
+      >
+        {MEDIA_SECTION.title}
+      </h2>
+      <p className="mb-8 max-w-2xl text-slate-600">{MEDIA_SECTION.body}</p>
+
+      <ul className="grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {MEDIA_SECTION.items.map((item) => {
+          const accent = ACCENT_STYLES[item.accent] ?? ACCENT_STYLES.sky;
+
+          return (
+            <li key={item.id} className="h-full">
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-labelledby={item.id}
+                className={`group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm no-underline transition hover:-translate-y-0.5 hover:shadow-md ${accent.hoverClass}`}
+              >
+                <span
+                  className={`mb-4 inline-flex w-fit rounded-full px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] ${accent.badgeClass}`}
+                >
+                  {item.label}
+                </span>
+
+                <h3
+                  id={item.id}
+                  className="mb-2 font-black italic text-xl leading-snug text-slate-900"
+                >
+                  {item.title}
+                </h3>
+
+                <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-600">
+                  {item.description}
+                </p>
+
+                <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-900 underline decoration-slate-300 underline-offset-4 transition group-hover:decoration-current">
+                  {item.cta} →
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

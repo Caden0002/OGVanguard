@@ -49,11 +49,26 @@ export function EventBanner() {
                 ) : null}
               </div>
 
-              {event.href ? (
+              {event.cta && (event.href || event.ctaDisabled) ? (
                 <div className="shrink-0 max-md:w-full max-md:max-w-xs">
-                  <SkewCta href={event.href} external={true} variant="secondary">
-                    {event.cta ?? "Learn more"}
-                  </SkewCta>
+                  {event.ctaDisabled ? (
+                    <span
+                      aria-disabled="true"
+                      className="-skew-x-12 inline-block max-md:mx-auto max-md:block max-md:w-full max-md:max-w-xs border-2 border-white/20 bg-white/10 shadow-sm md:mx-0"
+                    >
+                      <span className="skew-x-12 block w-full px-8 py-3.5 text-center text-xs font-black uppercase tracking-[0.18em] text-white/40 md:inline-block md:w-auto md:text-left">
+                        {event.cta}
+                      </span>
+                    </span>
+                  ) : (
+                    <SkewCta
+                      href={event.href}
+                      external={true}
+                      variant="secondary"
+                    >
+                      {event.cta}
+                    </SkewCta>
+                  )}
                 </div>
               ) : null}
             </div>
