@@ -5,8 +5,8 @@ export const ONGOING_EVENTS = [
         title: 'Circuit Bash Season 2',
         detail: '',
         highlight: 'Accumulate Points, Win Big Prizes',
+        href: 'https://www.ogcfvsingapore.com/schedule',
         cta: 'Join the circuit',
-        ctaDisabled: true,
     },
 ]
 
