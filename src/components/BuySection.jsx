@@ -16,10 +16,6 @@ export function BuySection() {
       >
         Buy cards
       </h2>
-      <p className="mb-8 max-w-2xl text-slate-600">
-        This product has not been reviewed by the Monetary Authority of
-        Singapore.{" "}
-      </p>
       <ul className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 lg:grid-cols-3">
         {BUY_OPTIONS.map((item) => (
           <li
